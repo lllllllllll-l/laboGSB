@@ -1,5 +1,5 @@
 <?php
-include ("db.php");
+include ("db_connect.php");
 $http_method = $_SERVER["REQUEST_METHOD"];
 
 switch($http_method)
@@ -7,24 +7,69 @@ switch($http_method)
     case 'GET':
         if(!empty($_GET["id"]))
         {
-            $id = intval($_GET["id"]);
-            getMedicament($id);
+            if (!empty($_GET["id2"]))
+            {
+                $id = intval($_GET["id"]);
+                $id2 = intval($_GET["id2"]);
+                getInteraction($id,$id2);
+            }
+            else
+            {
+                $id = intval($_GET["id"]);
+                getMedicament($id);
+            }
         }
         else
         {
-            getMedicament();
+            if(!empty($_GET["nom"]))
+            {
+                $nom = $_GET["nom"];
+                $mdp = $_GET["mdp"];
+                getUtilisateur($nom,$mdp);
+            }
+            else 
+            {
+                if(!empty($_GET["activite"]))
+                {
+                    $id = intval($_GET["idActivite"]);
+                    getActivite($id);
+                }
+                else 
+                {
+                    if(!empty($_GET["idUtilisateur"]))
+                    {
+                        $id = intval($_GET["idUtilisateur"]);
+                        getActiviteInscrit($id);
+                    }
+                    else 
+                    {
+                    getMedicament();
+                    }
+                }
+            }
         }
         break;
     case 'POST':
-        addPizza();
-        break;
-    case 'PUT':
-        $id = intval($_GET["id"]);
-        updPizza($id);
+        if (isset($_GET["ajoutU"]))
+        {
+            addUtilisateur();
+        }
+        else 
+        {
+            addActivite();
+        }
         break;
     case 'DELETE':
-        $id = intval($_GET["id"]);
-        delPizza($id);
+        $idU = intval($_GET["idU"]);
+        if (!empty($_GET["id"]))
+        {
+            $id = intval($_GET["id"]);
+            deleteInscription($id,$idU);
+        }
+        else 
+        {
+            deleteCompte($idU);
+        }
         break;
     default:
         header("HTTP/1.0 405 Method Not Allowed");
@@ -34,81 +79,101 @@ switch($http_method)
 function getMedicament($id=0)
 {
     global $conn;
-    $query = "SELECT * FROM medicament";
-    if($id != 0)
+    if ($id != 0)
     {
-        $query .= " WHERE id=".$id." LIMIT 1";
+        $query = $conn->prepare("SELECT * FROM medicament WHERE idMedicament = ? LIMIT 1");
+        $query->execute([$id]);
     }
-    $result = $conn->query($query);
-    while ($row = $result->fetch())
+    else
     {
-        $reponse[] = $row;
+        $query = $conn->query("SELECT * FROM medicament");
     }
-    $result->closeCursor();
-    header('Content-Type: application/json');
-    echo json_encode($reponse, JSON_PRETTY_PRINT);
+    echo json_encode($query->fetchAll(PDO::FETCH_ASSOC), JSON_PRETTY_PRINT);
 }
 
-function addPizza()
+function getActivite($id=0)
 {
     global $conn;
-    print_r($_POST);
-    $nom = $_POST["nom"];
-    $prix = $_POST["prix"];
-    $taille = $_POST["taille"];
-    $avis = $_POST["avis"];
-    echo $query="INSERT INTO pizza(nom,prix,taille,avis) VALUES('".$nom."', '".$prix."', '".$taille."', '".$avis."')";
-    $conn->query("SET NAMES utf8");
-    if($conn->query($query))
+    if ($id != 0)
     {
-        $reponse=array('status'=> 1, 'status_msg'=>'Pizza ajouté');
+        $query = $conn->prepare("SELECT * FROM activite WHERE idActivite = ? LIMIT 1");
+        $query->execute([$id]);
     }
-    else 
+    else
     {
-        $reponse=array('status'=> 0, 'status_msg'=>'Erreur ajout');
+        $query = $conn->query("SELECT * FROM activite");
     }
-    header('Content-Type: application/json');
-    echo json_encode($reponse, JSON_PRETTY_PRINT);
+    echo json_encode($query->fetchAll(PDO::FETCH_ASSOC), JSON_PRETTY_PRINT);
 }
 
-function updPizza($id)
+function getActiviteInscrit($id)
 {
     global $conn;
-    $_PUT = array();
-    parse_str(file_get_contents('php://input'), $_PUT);
-    $nom = $_PUT["nom"];
-    $prix = $_PUT["prix"];
-    $taille = $_PUT["taille"];
-    $avis = $_PUT["avis"];
-    $query="UPDATE pizza SET nom='".$nom."', prix='".$prix."', taille='".$taille."', avis='".$avis."' WHERE id=".$id;
-    $conn->query("SET NAMES utf8");
-    if($conn->query($query))
-    {
-        $reponse=array('status'=> 1, 'status_msg'=>'Pizza mis a jour');
-    }
-    else 
-    {
-        $reponse=array('status'=> 0, 'status_msg'=>'Erreur mis a jour');
-    }
-    header('Content-Type: application/json');
-    echo json_encode($reponse, JSON_PRETTY_PRINT);
+    $query = $conn->prepare("SELECT * FROM inscription WHERE idUtilisateurs = ?");
+    $query->execute([$id]);
+    echo json_encode($query->fetchAll(PDO::FETCH_ASSOC), JSON_PRETTY_PRINT);
 }
 
-function delPizza($id)
+function getInteraction($id, $id2)
 {
     global $conn;
-    $query = "DELETE FROM pizza WHERE id=".$id;
-    $conn->query("SET NAMES utf8");
-    if($conn->query($query))
-    {
-        $reponse=array('status'=> 1, 'status_msg'=>'Pizza supprimé');
+    $query = $conn->prepare("SELECT * FROM interaction WHERE (idMedicament = ? AND idMedicament_1 = ?) OR (idMedicament = ? AND idMedicament_1 = ?) LIMIT 1");
+    $query->execute([$id, $id2, $id2, $id]);
+    echo json_encode($query->fetchAll(PDO::FETCH_ASSOC), JSON_PRETTY_PRINT);
+}
+
+function addUtilisateur()
+{
+    global $conn;
+    try {
+        $query = $conn->prepare("INSERT INTO utilisateurs (nom, prenom, nomUtilisateur, mdpUtilisateur) VALUES (?, ?, ?, ?)");
+        $success = $query->execute([$_POST["nom"], $_POST["prenom"], $_POST["username"], $_POST["password"]]);
+        echo json_encode(['status' => 1, 'status_msg' => 'Utilisateur ajouté'], JSON_PRETTY_PRINT);
+    } catch (PDOException $e) {
+        echo json_encode(['status' => 0, 'status_msg' => 'Erreur ajout: ' . $e->getMessage()], JSON_PRETTY_PRINT);
     }
-    else 
+}
+
+function addActivite()
+{
+    global $conn;
+    $query = $conn->prepare("INSERT INTO inscription (idActivite, idUtilisateurs) VALUES (?, ?)");
+    $success = $query->execute([$_POST["idActivite"], $_POST["idUtilisateurs"]]);
+    echo json_encode(['status' => $success ? 1 : 0, 'status_msg' => $success ? 'Inscription ajoutée' : 'Erreur ajout'], JSON_PRETTY_PRINT);
+}
+
+function getUtilisateur($nomU, $motDePasseU)
+{
+    global $conn;
+    $query = $conn->prepare("SELECT * FROM utilisateurs WHERE nomUtilisateur = ?");
+    $query->execute([$nomU]);
+    $util = $query->fetch(PDO::FETCH_ASSOC);
+    
+    if ($util && password_verify($motDePasseU, $util["mdpUtilisateur"]))
     {
-        $reponse=array('status'=> 0, 'status_msg'=>'Erreur suppression');
+        echo json_encode($util, JSON_PRETTY_PRINT);
     }
-    header('Content-Type: application/json');
-    echo json_encode($reponse, JSON_PRETTY_PRINT);
+    else
+    {
+        echo json_encode(false, JSON_PRETTY_PRINT);
+    }
+}
+
+function deleteInscription($id, $idU)
+{
+    global $conn;
+    $query = $conn->prepare("DELETE FROM inscription WHERE idActivite = ? AND idUtilisateurs = ?");
+    $success = $query->execute([$id, $idU]);
+    echo json_encode(['status' => $success ? 1 : 0, 'status_msg' => $success ? 'Inscription supprimée' : 'Erreur suppression'], JSON_PRETTY_PRINT);
+}
+
+function deleteCompte($idU)
+{
+    global $conn;
+    $query = $conn->prepare("DELETE FROM utilisateurs WHERE idUtilisateurs = ?");
+    $success = $query->execute([$idU]);
+    echo json_encode(['status' => $success ? 1 : 0, 'status_msg' => $success ? 'Compte supprimé' : 'Erreur suppression'], JSON_PRETTY_PRINT);
 }
 ?>
+
 

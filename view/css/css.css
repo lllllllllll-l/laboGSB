@@ -1,0 +1,391 @@
+
+@import "bootstrap.css";
+
+
+body
+{
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(45deg, var(--bs-teal), var(--bs-cyan));
+    background-size: 100% 100%; /* Assure une couverture uniforme */
+    background-attachment: fixed;
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Assure que le body occupe toute la hauteur de la fenêtre */
+}
+
+.containers {
+    flex: 1; /* Permet au contenu de prendre tout l’espace disponible */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre horizontalement */
+    justify-content: center; /* Centre verticalement */
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.content {
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    text-align: center;
+}
+
+
+.pInteraction {
+    font-weight: bold; /* Texte en gras */
+    display: inline-block; /* Permet de définir les dimensions et les bordures */
+    padding: 10px; /* Espacement à l'intérieur du carré */
+    border: 2px solid black; /* Bordure noire autour du texte */
+    border-radius: 5px; /* Coins légèrement arrondis (optionnel) */
+    background-color: #f0f0f0; /* Fond de couleur claire pour mieux voir le carré */
+}
+
+label[for=medicamentSelect]
+{
+    font-weight: bold;
+    font-size:larger;
+}
+
+h1
+{
+    text-align:center;
+    font-size:x-large;
+    font-weight: bolder;
+}
+
+h2
+{
+    text-align:center;
+    font-size:xx-large;
+    font-weight: bolder;
+}
+
+
+
+/* Style de base du select */
+#medicamentSelect {
+    width: 100%; /* Occupe toute la largeur de son conteneur */
+    max-width: 300px; /* Largeur maximale de 300px */
+    padding: 10px 15px; /* Padding pour l'espace à l'intérieur */
+    font-size: 16px; /* Taille de la police */
+    color: #333; /* Couleur du texte */
+    background-color: #fff; /* Fond blanc */
+    border: 2px solid #ccc; /* Bordure gris clair */
+    border-radius: 8px; /* Coins arrondis */
+    cursor: pointer; /* Change le curseur pour indiquer qu'il est interactif */
+    transition: all 0.3s ease; /* Transition fluide pour les changements */
+}
+
+/* Style au focus */
+#medicamentSelect:focus {
+    border-color: #4CAF50; /* Changer la couleur de la bordure quand il est focus */
+    outline: none; /* Enlever le contour par défaut */
+}
+
+/* Ajouter une ombre subtile */
+#medicamentSelect:focus {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+/* popup Inscription */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50vw;
+    max-width: 600px;
+    min-height: 200px;
+    background: linear-gradient(45deg, var(--bs-teal), var(--bs-cyan));
+    padding: 40px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 12px; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.popup-content {
+    display: flex;
+    justify-content: center;
+    padding-top: 6%;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 25px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+}
+
+
+.close:hover {
+    color: red; /* Effet au survol */
+}
+
+
+
+
+
+/* formulaire inscription ? */
+.formulaire
+{
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position:absolute;
+    padding: 20px; /* Tu peux ajuster le padding ici */
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    min-width:20%;
+}
+
+.formulaire input {
+    width: 100%; /* ✅ Agrandir les inputs */
+    max-width: 400px; /* ✅ Limite la largeur pour éviter qu'ils soient trop grands */
+    padding: 10px;
+    margin: 10px 0; /* ✅ Ajoute un espace entre chaque input */
+    border: 1px solid #ccc;
+    border-radius: 8px; /* ✅ Coins arrondis pour un effet plus moderne */
+    font-size: 16px;
+    text-align: center; /* ✅ Texte centré dans l’input */
+}
+
+
+
+/* boutton connexion/inscription/submit */
+.btnContainer {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px;
+    background-color: var(--bs-teal);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: 0.3s ease;
+}
+
+.btnContainer:hover{
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+
+.formulaire h2{
+    text-align: center;
+}
+
+
+
+
+/* footer */
+
+footer {
+    background-color: #003037;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    width: 100%;
+    margin-top: auto; /* ✅ Force le footer à rester en bas */
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-left p {
+    margin: 0;
+}
+
+.footer-right button {
+    all: unset;
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.footer-right button:hover {
+    color: #f39c12;
+}
+
+
+
+
+/* Mention legales */
+.card-header{
+    background-color: #9191e7;
+}
+
+.card-body{
+    background-color: var(--bs-cyan);
+    
+}
+
+.card{
+    border:#222;
+    border-radius: 12px;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+
+
+
+
+/* Style général du header -- Navigation */
+header {
+    background-color: #00555c; /* Fond sombre */
+    color: white;
+    padding: 7px 0;
+    position: flex; 
+    top: 0;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+
+/* Conteneur du header  -- Navigation*/
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+#btnDeconnexion:hover{
+    color: red;
+}
+
+/* Logo */
+.logo img {
+    height: 10vh;
+}
+
+/* Navigation */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+    margin: 0;
+    padding: 0;
+}
+
+/* Liens de navigation */
+.nav-links li {
+    display: inline;
+}
+
+
+.nav-links a:hover {
+    color: #f39c12; /* Couleur au survol */
+}
+
+.btnNavBar {
+    all: unset;
+    transition:  0.3s ease;
+    font-size: 18px;
+}
+
+.btnNavBar:hover {
+    color: #f39c12;
+ }
+
+/* Responsive : Menu en colonne sur petits écrans */
+@media (max-width: 768px) {
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+
+
+
+
+
+/* Style pour la supression du compte */
+.header-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+}
+
+.header-popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.header-popup-buttons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-btn-confirm {
+    background: red;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.header-btn-cancel {
+    background: gray;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.header-btn-confirm:hover {
+    background: darkred;
+}
+
+.header-btn-cancel:hover {
+    background: darkgray;
+}
